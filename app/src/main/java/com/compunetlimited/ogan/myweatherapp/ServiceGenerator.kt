@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
- * Created by belema on 9/11/17.
+ * Created by belema on 9/11/17
  */
 
 object ServiceGenerator {

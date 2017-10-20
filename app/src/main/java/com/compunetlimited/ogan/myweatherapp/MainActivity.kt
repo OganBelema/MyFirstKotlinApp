@@ -63,13 +63,16 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    //method for making the api request
     private fun loadData()  {
         val weatherService = ServiceGenerator.createService(WeatherService::class.java)
 
         val appid: String = resources.getString(R.string.api_id)
         val units: String = resources.getString(R.string.api_unit)
+
         city = searchInput.text.toString()
         call = weatherService.getWeather(city, appid, units)
+
         call.enqueue(object : Callback<WeatherResult> {
             override fun onFailure(call: Call<WeatherResult>?, t: Throwable?) {
                 showLoadDone()
@@ -84,17 +87,27 @@ class MainActivity : AppCompatActivity() {
                         val result = response.body()
 
                         if (result != null){
+                            //collecting the date time data in unix time stamp and converting it
+                            // to normal date and time in GMT + 1
                             val sunset = result.sys.sunset
                             val sunrise = result.sys.sunrise
                             val sunsetDate = Date(sunset * 1000L)
                             val sunriseDate = Date(sunrise * 1000L)
                             val sdf = SimpleDateFormat("HH:mm:ss z", Locale.US)
-                            sunsetTextView.text = "Sunset: ${sdf.format(sunsetDate)}"
-                            sunriseTextView.text = "Sunrise: ${sdf.format(sunriseDate)}"
                             sdf.timeZone = TimeZone.getTimeZone("GMT+1")
+
+                            //using string interpolation
+                            sunsetTextView.text = "Sunset: ${sdf.format(sunsetDate)}"
+
+                            sunriseTextView.text = "Sunrise: ${sdf.format(sunriseDate)}"
+
                             temp.text = "Temperature: ${result.main.temp}°C"
+
                             temperatureDescription.text = "Description: ${result.weather[0].main}"
+
                             cityTextView.text = "City: ${result.name}"
+
+                            //loading the image into the view using picasso
                             Picasso.with(this@MainActivity)
                                     .load("http://openweathermap.org/img/w/${result.weather[0].icon}.png")
                                     .into(weatherIcon)

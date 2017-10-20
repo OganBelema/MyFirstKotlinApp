@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/error_textview"
+        android:layout_gravity="center"
+        android:gravity="center"
+        style="@style/text_view_style" />
+
+    <LinearLayout
+        android:id="@+id/view_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:hint="@string/hint" />
+
+        <Button
+            android:id="@+id/search_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/button_style"
+            android:textColor="@android:color/white"
+            android:text="@string/btn_text" />
+
+        <ImageView
+            android:id="@+id/weather_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/weather_desc"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/temp_tv"
+            style="@style/text_view_style"/>
+
+        <TextView
+            android:id="@+id/temp_desc"
+            style="@style/text_view_style"/>
+
+        <TextView
+            android:id="@+id/city_tv"
+            style="@style/text_view_style"/>
+
+        <TextView
+            android:id="@+id/sunrise_tv"
+            style="@style/text_view_style"/>
+
+        <TextView
+            android:id="@+id/sunset_tv"
+            style="@style/text_view_style"/>
+
+
+
+    </LinearLayout>
+</FrameLayout>

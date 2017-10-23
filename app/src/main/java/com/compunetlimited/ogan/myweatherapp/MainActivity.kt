@@ -13,18 +13,18 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var weatherIcon : ImageView
-    private lateinit var temp : TextView
-    private lateinit var temperatureDescription : TextView
-    private lateinit var sunsetTextView : TextView
+    private lateinit var weatherIcon: ImageView
+    private lateinit var temp: TextView
+    private lateinit var temperatureDescription: TextView
+    private lateinit var sunsetTextView: TextView
     private lateinit var sunriseTextView: TextView
-    private lateinit var call : Call<WeatherResult>
-    private lateinit var containerView : LinearLayout
-    private lateinit var loader : ProgressBar
+    private lateinit var call: Call<WeatherResult>
+    private lateinit var containerView: LinearLayout
+    private lateinit var loader: ProgressBar
     private lateinit var searchInput: EditText
-    private lateinit var city : String
-    private lateinit var errorTextView : TextView
-    private lateinit var cityTextView : TextView
+    private lateinit var city: String
+    private lateinit var errorTextView: TextView
+    private lateinit var cityTextView: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         containerView = findViewById(R.id.view_group)
         loader = findViewById(R.id.progress_bar)
         errorTextView = findViewById(R.id.error_textview)
-        cityTextView = findViewById(R.id.city_tv);
+        cityTextView = findViewById(R.id.city_tv)
 
         searchInput = findViewById(R.id.city)
         val button: Button = findViewById(R.id.search_btn)
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         city = searchInput.text.toString()
         call = weatherService.getWeather(city, appid, units)
 
-        call.enqueue(object : Callback<WeatherResult> {
+        call.enqueue(object: Callback<WeatherResult> {
             override fun onFailure(call: Call<WeatherResult>?, t: Throwable?) {
                 showLoadDone()
                 errorTextView.text = resources.getString(R.string.error_text)
@@ -88,18 +88,14 @@ class MainActivity : AppCompatActivity() {
 
                         if (result != null){
                             //collecting the date time data in unix time stamp and converting it
-                            // to normal date and time in GMT + 1
                             val sunset = result.sys.sunset
                             val sunrise = result.sys.sunrise
-                            val sunsetDate = Date(sunset * 1000L)
-                            val sunriseDate = Date(sunrise * 1000L)
-                            val sdf = SimpleDateFormat("HH:mm:ss z", Locale.US)
-                            sdf.timeZone = TimeZone.getTimeZone("GMT+1")
 
-                            //using string interpolation
-                            sunsetTextView.text = "Sunset: ${sdf.format(sunsetDate)}"
+                            //using string interpolation and whatIsTimeFor method
+                            // to convert unix time to 24 hr time in GMT + 1
+                            sunsetTextView.text = "Sunset: ${whatIsTheTimeFor(sunset)}"
 
-                            sunriseTextView.text = "Sunrise: ${sdf.format(sunriseDate)}"
+                            sunriseTextView.text = "Sunrise: ${whatIsTheTimeFor(sunrise)}"
 
                             temp.text = "Temperature: ${result.main.temp}°C"
 
@@ -120,5 +116,14 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    //created a method so I don't have to
+    //repeat myself checking time for sunset and sunrise
+    fun whatIsTheTimeFor(time: Long): String{
+        val date = Date(time * 1000L)
+        val sdf = SimpleDateFormat("HH:mm:ss z", Locale.US)
+        sdf.timeZone = TimeZone.getTimeZone("GMT+1")
+        return sdf.format(date)
     }
 }

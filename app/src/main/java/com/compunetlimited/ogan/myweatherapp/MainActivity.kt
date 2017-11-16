@@ -3,8 +3,8 @@ package com.compunetlimited.ogan.myweatherapp
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.*
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.weather_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,37 +13,15 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var weatherIcon: ImageView
-    private lateinit var temp: TextView
-    private lateinit var temperatureDescription: TextView
-    private lateinit var sunsetTextView: TextView
-    private lateinit var sunriseTextView: TextView
     private lateinit var call: Call<WeatherResult>
-    private lateinit var containerView: LinearLayout
-    private lateinit var loader: ProgressBar
-    private lateinit var searchInput: EditText
     private lateinit var city: String
-    private lateinit var errorTextView: TextView
-    private lateinit var cityTextView: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.weather_layout)
 
-        weatherIcon = findViewById(R.id.weather_icon)
-        temp = findViewById(R.id.temp_tv)
-        temperatureDescription = findViewById(R.id.temp_desc)
-        sunsetTextView = findViewById(R.id.sunset_tv)
-        sunriseTextView = findViewById(R.id.sunrise_tv)
-        containerView = findViewById(R.id.view_group)
-        loader = findViewById(R.id.progress_bar)
-        errorTextView = findViewById(R.id.error_textview)
-        cityTextView = findViewById(R.id.city_tv)
-
-        searchInput = findViewById(R.id.city)
-        val button: Button = findViewById(R.id.search_btn)
-        button.setOnClickListener{
+        search_btn.setOnClickListener{
             startLoading()
             loadData()
         }
@@ -51,15 +29,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showLoadDone(){
-        searchInput.text.clear()
-        loader.visibility = View.GONE
-        containerView.visibility = View.VISIBLE
+        search_input.text.clear()
+        progress_bar.visibility = View.GONE
+        view_group.visibility = View.VISIBLE
     }
 
     private fun startLoading(){
-        loader.visibility = View.VISIBLE
-        errorTextView.visibility = View.GONE
-        containerView.visibility = View.GONE
+        progress_bar.visibility = View.VISIBLE
+        error_textview.visibility = View.GONE
+        view_group.visibility = View.GONE
     }
 
 
@@ -67,16 +45,16 @@ class MainActivity : AppCompatActivity() {
     private fun loadData()  {
         val weatherService = ServiceGenerator.createService(WeatherService::class.java)
 
-        val appid: String = resources.getString(R.string.api_id)
-        val units: String = resources.getString(R.string.api_unit)
+        val appid = resources.getString(R.string.api_id)
+        val units = resources.getString(R.string.api_unit)
 
-        city = searchInput.text.toString()
+        city = search_input.text.toString()
         call = weatherService.getWeather(city, appid, units)
 
         call.enqueue(object: Callback<WeatherResult> {
             override fun onFailure(call: Call<WeatherResult>?, t: Throwable?) {
                 showLoadDone()
-                errorTextView.text = resources.getString(R.string.error_text)
+                error_textview.text = resources.getString(R.string.error_text)
             }
 
             override fun onResponse(call: Call<WeatherResult>?, response: Response<WeatherResult>?) {
@@ -93,24 +71,24 @@ class MainActivity : AppCompatActivity() {
 
                             //using string interpolation and whatIsTimeFor method
                             // to convert unix time to 24 hr time in GMT + 1
-                            sunsetTextView.text = "Sunset: ${whatIsTheTimeFor(sunset)}"
+                            sunset_tv.text = "Sunset: ${whatIsTheTimeFor(sunset)}"
 
-                            sunriseTextView.text = "Sunrise: ${whatIsTheTimeFor(sunrise)}"
+                            sunrise_tv.text = "Sunrise: ${whatIsTheTimeFor(sunrise)}"
 
-                            temp.text = "Temperature: ${result.main.temp}°C"
+                            temp_tv.text = "Temperature: ${result.main.temp}°C"
 
-                            temperatureDescription.text = "Description: ${result.weather[0].main}"
+                            temp_desc.text = "Description: ${result.weather[0].main}"
 
-                            cityTextView.text = "City: ${result.name}"
+                            city_tv.text = "City: ${result.name}"
 
                             //loading the image into the view using picasso
                             Picasso.with(this@MainActivity)
                                     .load("http://openweathermap.org/img/w/${result.weather[0].icon}.png")
-                                    .into(weatherIcon)
+                                    .into(weather_icon)
                         }
 
                     } else{
-                        errorTextView.text = response.message()
+                        error_textview.text = response.message()
                     }
                 }
 
